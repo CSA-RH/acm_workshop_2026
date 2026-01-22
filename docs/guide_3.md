@@ -89,4 +89,4 @@ In this exercise we will show you how to create a single node cluster:
     - Click on CREATE.
 
 ## Continue to the next chapter
-https://github.com/CSA-RH/workshop_acm/blob/main/docs/guide_4.md
+https://github.com/CSA-RH/acm_workshop_2026/blob/main/docs/guide_4.md
