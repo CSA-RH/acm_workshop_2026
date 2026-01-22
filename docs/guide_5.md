@@ -121,5 +121,3 @@ Navigate to the Governance menu.
 Notice that there is one violation for the policy kubeadmin-removed. This means there’s a kubeadmin password in this cluster and that OpenShift GitOps is installed. If you didn’t stall OpenShift GitOps manually through the Operator Hub, as stated in the previous section, the Governance would report a violation.
 
 While the Policy can be enforced by clicking the three dots at the right of the policy and selecting Enforce, unless there is a Identitity Provider configured, this action would remove the kubeadmin user and leaving us withought console access to the OCP cluster.
-
-https://github.com/CSA-RH/workshop_acm/blob/main/docs/guide_6.md

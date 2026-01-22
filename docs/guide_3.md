@@ -30,32 +30,6 @@ Please refer to [Creating a cloud connection for Amazon Web Services](https://ac
 
 ![Alt text](../images/credentials1.png?raw=true "credentials1")
 
-## Create a new OpenShift cluster in AWS
-
-- From the menu select Infrastructure → Clusters
-- Click Create Cluster
-- Select Amazon Web services
-- Select Standalone
-- Select the Infrastructure provider credential called AWS
-    - Name cluster: cluster1
-    - Leave the Cluster set empty
-    - Select a Release Image, choose whatever OCP version is newest
-    - Add a label of `environment=prod`. 
-    - Click Next
-- Change the region to: `us-west-1 or us-west-2`
-
-    ![Alt text](../images/region.png?raw=true "region")
-
-    `NOTE: The deployment might fail, if so please retry at different availability zones, as the amount of elastic IP addresses are limited.`
-
-- Leave everything else as is(default) and then click NEXT on the other screens or select 7 - Review and create on the menu and then click CREATE
-
-    ![Alt text](../images/clustercreate1.png?raw=true "clustercreate1")
-
-In about 45 minutes this new cluster will be ready to go!  
-
-![Alt text](../images/clustercreate11.png?raw=true "clustercreate11")
-
 ## Creating a Single Node Cluster (SNO) in AWS
 
 In this exercise we will show you how to create a single node cluster:
