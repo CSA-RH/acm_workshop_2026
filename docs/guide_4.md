@@ -4,6 +4,11 @@ In the previous lab, you explored the Cluster Lifecycle functionality in RHACM. 
 
 Application Lifecycle functionality in RHACM provides the processes that are used to manage application resources on your managed clusters. This allows you to define a single or multi-cluster application using Kubernetes specifications, but with additional automation of the deployment and lifecycle management of resources to individual clusters. An application designed to run on a single cluster is straightforward and something you ought to be familiar with from working with OpenShift fundamentals. A multi-cluster application allows you to orchestrate the deployment of these same resources to multiple clusters, based on a set of rules you define for which clusters run the application components.
 
+Different components that the Application Lifecycle model in RHACM is composed of:
+- Placement: A Placement defines the set of managed clusters where a Policy or PolicySet will be evaluated and enforced.
+- Placement Binding: Binds between the Policy/PolicySet with a Placement
+- Application: It is the GitOps object that binds a Git repository to a live Kubernetes state and continuously enforces it.
+
 ## Deploying Argo CD on the Hub Cluster
 
 **Prerequisites**:  
