@@ -8,7 +8,7 @@ Application Lifecycle functionality in RHACM provides the processes that are use
 
 **Prerequisites**:  
 
-- On the local cluster make sure add a label if it’s not there yet:  `rhdp_usage=development`
+- On the local cluster make sure add a label if it’s not there yet:  `environment=development`
 
     ![Alt text](../images/application1.png?raw=true "application1")
 
