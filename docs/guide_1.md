@@ -8,7 +8,6 @@ It’s important to note that this workshop covers only a subset of the availabl
 This hands on Workshop is running on AWS cloud hyperscaller and provides an overview of the Red Hat ACM (Advanced Cluster Management). It will demonstrate key features that will help understand how ACM can be used to manage the:
 - Lifecycle of the OpenShift spoke clusters, such as creation of clusters. 
 - Application Lifecycle, to deploy applications using GitOps
-- Governance Risc and Compliance, to apply policies that control the allowed configurations.
-- Observability, from ACM having visibility of the metrics of the overal spoke clusters using Grafana. 
+- Governance Risk and Compliance, to apply policies that control the allowed configurations.
 
 https://github.com/CSA-RH/acm_workshop_2026/blob/main/docs/guide_3.md
