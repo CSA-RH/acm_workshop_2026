@@ -117,7 +117,9 @@ Since we created this policy as a Inform only it will not fix any of the violati
 
 Navigate to the Results screen, allow the remediation to complete, it may take longer (20-30 mins) to enforce the policy.
 
+![Alt text](../images/policy1f.png?raw=true "policy1f.png")
 
+![Alt text](../images/policy1g.png?raw=true "policy1g.png")
 
 
 
