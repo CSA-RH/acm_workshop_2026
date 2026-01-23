@@ -10,114 +10,117 @@ Review GRC Functionality
 
 To begin, it is important to define exactly what GRC is. In RHACM, you build policies that are applied to managed clusters. These policies can do different things, which are described below, but they ultimately serve to govern the configurations of your clusters. This governance over your cluster configurations reduces risk and ensures compliance with standards defined by stakeholders, which can include security teams and operations teams
 
-This is a complex and emerging/evolving topic, and this course is only providing an overview. Please consult the [GRC product documentation](https://docs.redhat.com/en/documentation/red_hat_advanced_cluster_management_for_kubernetes/2.12/html/governance/index) for more details on any of these policy controllers.
+This is a complex and emerging/evolving topic, and this course is only providing an overview. Please consult the [GRC product documentation](https://docs.redhat.com/en/documentation/red_hat_advanced_cluster_management_for_kubernetes/2.15/html/governance/index) for more details on any of these policy controllers.
+
+## Review GRC Functionality
+To begin, it is important to define exactly what GRC is. In RHACM, you build policies that are applied to managed clusters. These policies can do different things, which are described below, but they ultimately serve to govern the configurations of your clusters. This governance over your cluster configurations reduces risk and ensures compliance with standards defined by stakeholders, which can include security teams and operations teams
+
+This table describes the types of policy controllers available in RHACM:
+
+| Use                                                                 | Policy Template type | Controller used for enforcement        |
+|---------------------------------------------------------------------|----------------------|----------------------------------------|
+| Deploy Kubernetes manifests (e.g. Deployment, Namespace, ConfigMap, etc.) | ConfigurationPolicy  | Configuration Policy Controller        |
+| Certificate compliance or validity rules                             | CertificatePolicy    | Certificate Policy Controller          |
+| Operator installation or subscription manifests (for Operator Lifecycle Manager operators only) | OperatorPolicy       | Operator Policy Controller             |
+| Group policies                                                      | PolicySet            | PolicySet Controller                   |
+
+You need to create three different resources in order to implement the policy controllers:
+
+- Policy: The Policy defines what you actually want to check and possibly configure (with enforce). Policies include a policy-template which defines a list of objectDefinitions. The policy also determines the namespaces it is applied to, as well as the remediation actions it takes.
+
+- Placement: Identifies a list of managed clusters that are targeted, to deploy the Policy or PolicySet.
+
+- PlacementBinding: Connect the policy to the Placement.
 
 ### Create a Policy
-We’ll go through a simple example, and create a policy in the default namespace.
+We’ll go through a simple example, and create a policy in the open-cluster-management namespace.
 For this, we’ll need a little setup:
 
+#### Bind the open-cluster-management namespace with the ClusterSet global
 - Navigate to Clusters and access the ClusterSets tab.
 
-    ![Alt text](../images/policy1.png?raw=true "policy1")
+  ![Alt text](../images/policy1.png?raw=true "policy1")
 
-- Click on the 3-dots button on the right, and then on Edit namespaces bindings and add the default namespace.
+- Click on the 3-dots button on the right, and then on Edit namespaces bindings and add the open-cluster-management namespace.
 
-    ![Alt text](../images/policy2.png?raw=true "policy2")
+  ![Alt text](../images/policy2.png?raw=true "policy2")
+
+#### Create a Policy to inform if etcd is encrypted:
 
 - Navigate to the Governance screen and click create policy. 
 
-    ![Alt text](../images/policy3.png?raw=true "policy3")
+  ![Alt text](../images/policy3.png?raw=true "policy3")
 
-- Build a policy with the following information:
-    - Name: policy-grc-cert
-    - Namespace: default
-    - Click NEXT.
-        - Policy Templates: Click on Add policy template and select Certificate Management expiration.
-    - Click NEXT.
-    - On Placement, click on New placement.
-        - Select global as the clusterSet.
-    - Leave everything else as default and click NEXT.
+- Build a policy with the following configuration:
 
-        ![Alt text](../images/policy4.png?raw=true "policy4")
+  1. Navigate to the Governance screen and click create policy.
 
-    - As you can see in the **Review** page, this policy will be applied to every OpenShift cluster in the **global ClusterSet**, and it will look for expired certificates in them. If there’s a certificate that is set to expire in less time than the **minimumDuration** specification, the policy will **inform** a not compliant status.
+  1. Under the Create Policy screen, enable the YAML. Copy and Paste the ETCD cryption Policy YAML we have provided below:
+      - Name: policy-etcdencryption
+      - Namespace: open-cluster-management
+      ![Alt text](../images/policy1a.png?raw=true "policy1a")
+      - press next button
 
-    - Click SUBMIT.
+  1. In Policy Templates menu screen configure:
+      - remediationAction: inform
+      - press on Add policy template and selet Enable etcd encryption
+      ![Alt text](../images/policy2a.png?raw=true "policy2a")
 
-    - Please note that initially it will complain that there is an issue with the policy but shortly after should go green and get a checkmark.
+      - Prune Object Behavior: None
+      - Keep the "configuration objects" and the rest of configuration to the default
+      ![Alt text](../images/policy3a.png?raw=true "policy3a")
+      - press next button
 
-        ![Alt text](../images/policy5.png?raw=true "policy5")
+  1. In Placement menu screen configure:
+ 
+     - press new placement
+        - keep the default name
+        - select the global clusterset
+        ![Alt text](../images/placement1a.png?raw=true "placement1a")
 
-        ![Alt text](../images/policy6.png?raw=true "policy6")
+        - press on + Add label expression
+          - Label: environment
+          - Operator: equals any of
+          - Values: development
+          ![Alt text](../images/placement2a.png?raw=true "placement2a.png")
 
-You can find some examples of policies in the [Collection of policy examples for Open Cluster Management](https://github.com/open-cluster-management/policy-collection).
+        - Leave everything else as default and click NEXT twice.
+          ![Alt text](../images/placement3a.png?raw=true "placement3a.png")
+
+        -  Press submit
+
+#### Lets check the Policies compliance
+
+Navigate to the governance tab and check the policies violations
+
+- Here you find one Violation in the local-cluster, note that the local cluster have set the label environment=development, so the Placement applyed the Policy to this cluster.
+  ![Alt text](../images/policy1b.png?raw=true "policy1b.png")
+
+- Press on the Clusters -> local-cluster: this cluster has one violation against the policy policy-etcdencryption
+  ![Alt text](../images/policy1c.png?raw=true "policy1c.png")
+ 
+- Press on the policy "policy-etcdencryption"
+  ![Alt text](../images/policy1d.png?raw=true "policy1d.png")
+ 
+ 
+
+Since we created this policy as a Inform only it will not fix any of the violations, lets go ahead and fix them:
+
+- On the top of the policy click on the Actions → Edit Policy
+
+- Select Step 2 and change the Remediation to Enforce
+
+- Select Step 5 review that is under Remediation is set to Enforce
+
+- Click Submit
+  ![Alt text](../images/policy1e.png?raw=true "policy1e.png")
+
+Navigate to the Results screen, allow the remediation to complete, it may take longer (20-30 mins) to enforce the policy.
 
 
-## Deploying Policies with Policy Generator
 
-This Policy Generator definition will achieve 2 configuration policies:
-- **openshift-gitops-installed**: The goal of the first one is to inform if the OpenShift GitOps operator is installed on the Hub cluster.
-- **kubeadmin-removed**: The goal of this second policy is to inform if the kubeadmin user is removed from managed clusters.
 
-Both policies are informative only and will only execute them manually to showcase how to resolve issues.
 
-In order to deliver these policies we will need to leverage the RHACM Application engine and the GitOps Subscription model.
 
-**Pre-requisite** 
-- Before we start, on the local-cluster, make sure to add a label if it’s not there yet: `rhdp_usage=development`
 
-    ![Alt text](../images/policy7.png?raw=true "policy7")
 
-- Let’s just do one more step: In the bastion machine, run this command below to make sure our lab user has the right permissions to create policies with policy generator:
-
-    ```sh
-    cat << EOF | oc apply -f -
-    apiVersion: rbac.authorization.k8s.io/v1
-    kind: ClusterRoleBinding
-    metadata:
-      name: open-cluster-management:subscription-admin
-    roleRef:
-      apiGroup: rbac.authorization.k8s.io
-      kind: ClusterRole
-      name: open-cluster-management:subscription-admin
-    subjects:
-    - apiGroup: rbac.authorization.k8s.io
-      kind: User
-      name: kube:admin
-    - apiGroup: rbac.authorization.k8s.io
-      kind: User
-      name: system:admin
-    - apiGroup: rbac.authorization.k8s.io
-      kind: User
-      name: admin
-    EOF
-    ```
-
-- Now, in the ACM UI, navigate to Applications.
-
-- Click Create application, select Subscription. Enter the following information:
-- Name: policy-generator
-- Namespace: policy-generator
-- Under repository types, select the GIT repository
-- URL: https://github.com/levenhagen/demo-policygenerator.git
-- Branch: main
-- Under Select cluster for application deployment,
-    - Select global clusterSet
-    - and Deploy only to local cluster 
-    - Label: name - equals any of - Value: local-cluster
-- Verify all the information is correct. Click Create
-- It will take a few minutes to deploy the application, Click on the Topology Tab to view and verify that all of the circles are green.
-
-    ![Alt text](../images/policy8.png?raw=true "policy8")
-
-Navigate to the Governance menu.
-- Click on the Policies tab.
-- Verify that you see 2 policies:
-    - kubeadmin-removed
-    - openshift-gitops-installed
-
-    ![Alt text](../images/policy9_new.png?raw=true "policy9")
-
-Notice that there is one violation for the policy kubeadmin-removed. This means there’s a kubeadmin password in this cluster and that OpenShift GitOps is installed. If you didn’t stall OpenShift GitOps manually through the Operator Hub, as stated in the previous section, the Governance would report a violation.
-
-While the Policy can be enforced by clicking the three dots at the right of the policy and selecting Enforce, unless there is a Identitity Provider configured, this action would remove the kubeadmin user and leaving us withought console access to the OCP cluster.

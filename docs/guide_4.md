@@ -5,7 +5,7 @@ In the previous lab, you explored the Cluster Lifecycle functionality in RHACM. 
 Application Lifecycle functionality in RHACM provides the processes that are used to manage application resources on your managed clusters. This allows you to define a single or multi-cluster application using Kubernetes specifications, but with additional automation of the deployment and lifecycle management of resources to individual clusters. An application designed to run on a single cluster is straightforward and something you ought to be familiar with from working with OpenShift fundamentals. A multi-cluster application allows you to orchestrate the deployment of these same resources to multiple clusters, based on a set of rules you define for which clusters run the application components.
 
 Different components that the Application Lifecycle model in RHACM is composed of:
-- Placement: A Placement defines the set of managed clusters where a Policy or PolicySet will be evaluated and enforced.
+- Placement: Identifies a list of managed clusters that are targeted, to deploy the Policy or PolicySet.
 - Placement Binding: Binds between the Policy/PolicySet with a Placement
 - Application: It is the GitOps object that binds a Git repository to a live Kubernetes state and continuously enforces it.
 
@@ -42,21 +42,6 @@ Different components that the Application Lifecycle model in RHACM is composed o
 - At the very top, click on Refresh web console. Then, you’re now able to see the OpenShift GitOps operator route by click at the button on the top-right corner of the web console.
 
     ![Alt text](../images/application7.png?raw=true "application7")
-
-- Go to the Bastion host again, login with the credentials provided, for your user and run the following command:
-
-    ```sh
-    cat << EOF | oc apply -f -
-    apiVersion: user.openshift.io/v1
-    kind: Group
-    metadata:
-      name: cluster-admins
-    users:
-    - admin
-    EOF
-    ```
-
-    This step is adding the right ArgoCD permissions to the lab user so we can later log in.
 
 - Log in via OpenShift button using your Openshift admin credential, you might need to allow permissions, click Allow. Once logged in ArgoCD should look like this:
 
